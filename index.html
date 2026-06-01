@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sálvia Restaurante</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:#fff8f0;
+color:#333;
+}
+
+header{
+background:linear-gradient(135deg,#d62828,#f77f00);
+padding:30px;
+text-align:center;
+color:white;
+position:sticky;
+top:0;
+z-index:100;
+}
+
+header h1{
+font-size:2rem;
+}
+
+header p{
+margin-top:5px;
+opacity:.9;
+}
+
+.search{
+padding:15px;
+background:white;
+position:sticky;
+top:100px;
+z-index:99;
+}
+
+.search input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:#f3f3f3;
+font-size:16px;
+}
+
+.categorias{
+display:flex;
+overflow-x:auto;
+gap:10px;
+padding:15px;
+background:white;
+}
+
+.categorias button{
+border:none;
+padding:10px 16px;
+border-radius:30px;
+background:#eee;
+cursor:pointer;
+font-weight:600;
+white-space:nowrap;
+}
+
+.categorias button.active{
+background:#d62828;
+color:white;
+}
+
+.produtos{
+padding:20px;
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+border-radius:18px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+}
+
+.info{
+padding:15px;
+}
+
+.info h3{
+margin-bottom:8px;
+}
+
+.preco{
+color:#d62828;
+font-weight:700;
+font-size:18px;
+margin-bottom:12px;
+}
+
+.btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#d62828;
+color:white;
+cursor:pointer;
+font-weight:600;
+}
+
+.cart-btn{
+position:fixed;
+bottom:20px;
+right:20px;
+width:65px;
+height:65px;
+border-radius:50%;
+background:#d62828;
+color:white;
+border:none;
+font-size:24px;
+cursor:pointer;
+box-shadow:0 8px 25px rgba(0,0,0,.25);
+z-index:999;
+}
+
+.badge{
+position:absolute;
+background:#fcbf49;
+color:black;
+padding:2px 8px;
+border-radius:50%;
+font-size:12px;
+top:-5px;
+right:-5px;
+}
+
+.sidebar{
+position:fixed;
+top:0;
+right:-400px;
+width:350px;
+max-width:100%;
+height:100%;
+background:white;
+box-shadow:-5px 0 20px rgba(0,0,0,.15);
+transition:.3s;
+z-index:1000;
+display:flex;
+flex-direction:column;
+}
+
+.sidebar.open{
+right:0;
+}
+
+.sidebar-header{
+padding:20px;
+background:#d62828;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.sidebar-tabs{
+display:flex;
+gap:10px;
+padding:10px 15px;
+background:#f7f3f1;
+border-bottom:2px solid #eee;
+}
+
+.tab-btn{
+padding:10px 16px;
+border:none;
+border-radius:12px 12px 0 0;
+background:#ddd;
+color:#333;
+cursor:pointer;
+font-weight:600;
+transition:.2s;
+border-bottom:3px solid transparent;
+}
+
+.tab-btn.active{
+background:#d62828;
+color:white;
+border-bottom:3px solid #d62828;
+}
+
+.tab-content{
+display:none;
+}
+
+.tab-content.active{
+display:block;
+}
+
+.cart-items{
+flex:1;
+overflow-y:auto;
+overflow-x:hidden;
+padding:15px;
+scroll-behavior:smooth;
+}
+
+.cart-items::-webkit-scrollbar{
+width:6px;
+}
+
+.cart-items::-webkit-scrollbar-track{
+background:#f1f1f1;
+border-radius:10px;
+}
+
+.cart-items::-webkit-scrollbar-thumb{
+background:#d62828;
+border-radius:10px;
+}
+
+.cart-items::-webkit-scrollbar-thumb:hover{
+background:#b01f1f;
+}
+
+.item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+padding-bottom:10px;
+border-bottom:1px solid #eee;
+gap:8px;
+}
+
+.item-info{
+flex:1;
+}
+
+.item-name{
+font-weight:600;
+margin-bottom:4px;
+}
+
+.item-price{
+color:#d62828;
+font-size:14px;
+}
+
+.item-controls{
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.qty-btn{
+width:28px;
+height:28px;
+border:none;
+border-radius:6px;
+background:#d62828;
+color:white;
+cursor:pointer;
+font-weight:600;
+font-size:16px;
+transition:.2s;
+}
+
+.qty-btn:hover{
+background:#b01f1f;
+}
+
+.qty-display{
+min-width:30px;
+text-align:center;
+font-weight:600;
+}
+
+.remove-btn{
+padding:4px 8px;
+border:none;
+border-radius:6px;
+background:#dc3545;
+color:white;
+cursor:pointer;
+font-size:12px;
+}
+
+.total{
+padding:20px;
+border-top:1px solid #ddd;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.total h2{
+margin-bottom:0;
+}
+
+.whatsapp-btn{
+width:100%;
+padding:14px;
+border:none;
+background:#25d366;
+color:white;
+font-size:16px;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+}
+
+.whatsapp-btn:hover{
+background:#20ba5a;
+}
+
+.finalizar{
+width:100%;
+padding:14px;
+border:none;
+background:#28a745;
+color:white;
+font-size:16px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.pix-btn{
+width:100%;
+margin-top:10px;
+padding:14px;
+border:none;
+background:#ff7f11;
+color:white;
+font-size:16px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.pix-panel{
+position:fixed;
+left:50%;
+top:50%;
+transform:translate(-50%, -50%);
+width:min(90%,420px);
+padding:20px;
+border-radius:24px;
+background:white;
+box-shadow:0 25px 50px rgba(0,0,0,.18);
+border:1px solid rgba(0,0,0,.08);
+text-align:center;
+z-index:1500;
+}
+
+.pix-panel h3{
+margin-bottom:10px;
+font-size:20px;
+}
+
+.pix-panel::before{
+content:'';
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.55);
+z-index:-1;
+border-radius:0;
+}
+
+.pix-panel p,
+.pix-panel strong{
+line-height:1.6;
+}
+
+.pix-code{
+margin:10px 0;
+display:flex;
+flex-direction:column;
+gap:10px;
+align-items:center;
+}
+
+.pix-code img{
+width:150px;
+border-radius:16px;
+box-shadow:0 8px 20px rgba(0,0,0,.12);
+}
+
+.fav-btn{
+position:absolute;
+top:12px;
+right:12px;
+width:38px;
+height:38px;
+border:none;
+border-radius:50%;
+background:rgba(255,255,255,.9);
+cursor:pointer;
+font-size:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 6px 18px rgba(0,0,0,.12);
+transition:.2s;
+}
+
+.fav-btn.active{
+background:#d62828;
+color:white;
+}
+
+.card{
+position:relative;
+}
+
+.history-section{
+margin-top:20px;
+}
+
+.history-header{
+margin-bottom:10px;
+}
+
+.history-item{
+padding:12px;
+border-radius:14px;
+background:#f7f3f1;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:10px;
+}
+
+.history-item div{
+flex:1;
+}
+
+.history-item button{
+padding:8px 12px;
+border:none;
+border-radius:10px;
+background:#d62828;
+color:white;
+cursor:pointer;
+}
+
+.empty{
+padding:20px;
+color:#666;
+text-align:center;
+}
+
+.fly-img{
+position:fixed;
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:18px;
+pointer-events:none;
+z-index:2000;
+transition:transform .7s ease, opacity .7s ease;
+}
+
+.copied{
+margin-top:8px;
+color:#155724;
+background:#d4edda;
+padding:8px 12px;
+border-radius:10px;
+font-size:14px;
+}
+
+.payment-modal{
+position:fixed;
+left:50%;
+top:50%;
+transform:translate(-50%, -50%);
+width:min(90%,450px);
+padding:30px;
+border-radius:24px;
+background:white;
+box-shadow:0 25px 50px rgba(0,0,0,.2);
+z-index:1600;
+text-align:center;
+}
+
+.payment-modal::before{
+content:'';
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+z-index:-1;
+}
+
+.payment-status{
+font-size:48px;
+margin:20px 0;
+}
+
+.status-pending{
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%, 100% { opacity:1; }
+50% { opacity:0.6; }
+}
+
+.status-confirmed{
+color:#28a745;
+}
+
+.payment-info{
+background:#f7f3f1;
+padding:15px;
+border-radius:12px;
+margin:15px 0;
+font-size:14px;
+}
+
+.timer{
+font-size:28px;
+font-weight:700;
+color:#d62828;
+margin:10px 0;
+}
+
+.btn-confirm{
+width:100%;
+padding:14px;
+border:none;
+background:#28a745;
+color:white;
+font-size:16px;
+border-radius:10px;
+cursor:pointer;
+margin-top:10px;
+font-weight:600;
+}
+
+.btn-confirm:hover{
+background:#20c997;
+}
+
+@media(max-width:768px){
+.produtos{
+grid-template-columns:1fr;
+}
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🍃 Sálvia Restaurante</h1>
+<p>Espetos • Refeições • Petiscos • Bebidas</p>
+</header>
+
+<div class="search">
+<input type="text" id="busca" placeholder="🔍 Buscar produto...">
+</div>
+
+<div class="categorias">
+<button class="active" onclick="filtrar('Todos',this)">Todos</button>
+<button onclick="filtrar('Espetos',this)">Espetos</button>
+<button onclick="filtrar('Refeições',this)">Refeições</button>
+<button onclick="filtrar('Petiscos',this)">Petiscos</button>
+<button onclick="filtrar('Sanduíches',this)">Sanduíches</button>
+<button onclick="filtrar('Sobremesas',this)">Sobremesas</button>
+<button onclick="filtrar('Bebidas',this)">Bebidas</button>
+</div>
+
+<div class="produtos" id="produtos"></div>
+
+<button class="cart-btn" onclick="toggleCart()">
+🛒
+<span class="badge" id="badge">0</span>
+</button>
+
+<div class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<h2>Pedidos</h2>
+<button onclick="toggleCart()">✖</button>
+</div>
+
+<div class="sidebar-tabs">
+<button class="tab-btn active" onclick="switchTab('carrinho')">🛒 Carrinho</button>
+<button class="tab-btn" onclick="switchTab('pedidos')">📋 Pedidos</button>
+</div>
+
+<div id="carrinho-tab" class="tab-content active">
+<div class="cart-items" id="cartItems"></div>
+</div>
+
+<div id="pedidos-tab" class="tab-content">
+<div class="cart-items" id="orderHistory"></div>
+</div>
+
+<div class="total">
+<h2>Total: R$ <span id="total">0.00</span></h2>
+<button class="finalizar" onclick="finalizarPedido()">Finalizar Pedido</button>
+<button class="whatsapp-btn" onclick="enviarWhatsApp()">📱 Enviar Pedido WhatsApp</button>
+<button class="pix-btn" type="button" onclick="togglePix()">Pagar com PIX</button>
+</div>
+</div>
+
+<div class="pix-panel" id="pixPanel" hidden>
+<button class="btn" type="button" onclick="togglePix()" style="margin-bottom:10px;background:#555;">Fechar</button>
+<h3>Pagamento PIX</h3>
+<p>Chave PIX: <strong>pix@salvia.com.br</strong></p>
+<div class="pix-code">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=pix%3Apix%40salvia.com.br" alt="QR Code PIX">
+<span>Use o QR ou copie a chave.</span>
+</div>
+<button class="btn" type="button" onclick="copiarQr()">Copiar QR Code</button>
+<button class="btn" type="button" onclick="copiarPix()" style="margin-top:10px;background:#ff7f11;">Copiar chave PIX</button>
+<p class="pix-note">Após o pagamento, confirme o pedido aqui para enviar aos cozinheiros.</p>
+<div id="copiedMessage" class="copied" style="display:none;">Chave PIX copiada!</div>
+<div id="copiedQrMessage" class="copied" style="display:none;">QR Code copiado!</div>
+</div>
+
+<div class="payment-modal" id="paymentModal" hidden>
+<h2>Processando Pagamento</h2>
+<div class="payment-status status-pending" id="statusIcon">⏳</div>
+<p>Pedido ID: <strong id="orderId"></strong></p>
+<div class="payment-info">
+<p>Valor: <strong id="paymentAmount"></strong></p>
+<p>Detectando pagamento PIX...</p>
+</div>
+<div class="timer" id="timer">60</div>
+<button class="btn-confirm" onclick="confirmPaymentManual()">Confirmar Pagamento</button>
+<button class="btn" type="button" onclick="cancelPayment()" style="margin-top:10px;background:#dc3545;">Cancelar</button>
+</div>
+
+<script>
+
+const produtos = [
+
+{nome:"Alcatra",preco:16,categoria:"Espetos",img:"https://images.unsplash.com/photo-1544025162-d76694265947"},
+{nome:"Alcatra c/ Bacon",preco:16,categoria:"Espetos",img:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1"},
+{nome:"Cupim",preco:16,categoria:"Espetos",img:"https://images.unsplash.com/photo-1529692236671-f1dc5c5c6d62"},
+{nome:"Kafta",preco:15,categoria:"Espetos",img:"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd"},
+{nome:"Coração de Frango",preco:15,categoria:"Espetos",img:"https://images.unsplash.com/photo-1600891964092-4316c288032e"},
+
+{nome:"Parmegiana de Alcatra",preco:35,categoria:"Refeições",img:"https://images.unsplash.com/photo-1513104890138-7c749659a591"},
+{nome:"Contra-filé",preco:31,categoria:"Refeições",img:"https://images.unsplash.com/photo-1544025162-d76694265947"},
+{nome:"Frango Grelhado",preco:31,categoria:"Refeições",img:"https://images.unsplash.com/photo-1608039755401-742074f0548d"},
+
+{nome:"Carne de Sol c/ Mandioca",preco:51,categoria:"Petiscos",img:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1"},
+{nome:"Batata Frita Crocante",preco:21,categoria:"Petiscos",img:"https://images.unsplash.com/photo-1576107232684-1279f390859f"},
+
+{nome:"Hambúrguer Sálvia",preco:29.90,categoria:"Sanduíches",img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd"},
+{nome:"Baguete Churrasco",preco:21,categoria:"Sanduíches",img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543"},
+
+{nome:"Brigadeiro de Cacau",preco:9,categoria:"Sobremesas",img:"https://images.unsplash.com/photo-1551024601-bec78aea704b"},
+{nome:"Pudim Perfeito",preco:16.90,categoria:"Sobremesas",img:"https://images.unsplash.com/photo-1563805042-7684c019e1cb"},
+
+{nome:"Refrigerante",preco:7,categoria:"Bebidas",img:"https://images.unsplash.com/photo-1581636625402-29b2a704ef13"},
+{nome:"Jarra de Suco",preco:18,categoria:"Bebidas",img:"https://images.unsplash.com/photo-1622597467836-f3e670c2f4d0"},
+{nome:"Água",preco:5,categoria:"Bebidas",img:"https://images.unsplash.com/photo-1564419320461-6870880221ad"},
+{nome:"H2O",preco:8.5,categoria:"Bebidas",img:"https://images.unsplash.com/photo-1554866585-cd94860890b7"},
+{nome:"Energético",preco:13,categoria:"Bebidas",img:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97"}
+
+];
+
+let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+let pedidosAnteriores = JSON.parse(localStorage.getItem("pedidosAnteriores")) || [];
+let categoriaAtual="Todos";
+
+function normalizarCarrinho(){
+    if(Array.isArray(carrinho) && carrinho.length > 0){
+        if(!carrinho[0].quantidade){
+            const carrinhoNormalizado = {};
+            carrinho.forEach(item => {
+                const key = item.nome;
+                if(carrinhoNormalizado[key]){
+                    carrinhoNormalizado[key].quantidade++;
+                } else {
+                    carrinhoNormalizado[key] = {...item, quantidade: 1};
+                }
+            });
+            carrinho = Object.values(carrinhoNormalizado);
+            localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        }
+    }
+}
+
+function renderProdutos(){
+
+const busca=document.getElementById("busca").value.toLowerCase();
+
+const lista=produtos.filter(p=>
+(categoriaAtual==="Todos"||p.categoria===categoriaAtual)
+&& p.nome.toLowerCase().includes(busca)
+);
+
+document.getElementById("produtos").innerHTML=lista.map(p=>{
+const favoritoClass = favoritos.includes(p.nome) ? 'active' : '';
+return `
+<div class="card">
+<button class="fav-btn ${favoritoClass}" onclick="toggleFavorite('${p.nome}', event)">♥</button>
+<img src="${p.img}">
+<div class="info">
+<h3>${p.nome}</h3>
+<div class="preco">R$ ${p.preco.toFixed(2)}</div>
+<button class="btn" onclick="addCarrinho('${p.nome}', this)">
+Adicionar
+</button>
+</div>
+</div>
+`;}).join("");
+
+}
+
+function toggleFavorite(nome, event){
+    event.stopPropagation();
+    if(favoritos.includes(nome)){
+        favoritos = favoritos.filter(item => item !== nome);
+    } else {
+        favoritos.push(nome);
+    }
+    localStorage.setItem("favoritos", JSON.stringify(favoritos));
+    renderProdutos();
+}
+
+function addCarrinho(nome, btn){
+
+const produto=produtos.find(p=>p.nome===nome);
+if(!produto) return;
+
+const itemExistente = carrinho.find(item => item.nome === nome);
+
+if(itemExistente){
+    itemExistente.quantidade++;
+} else {
+    carrinho.push({...produto, quantidade: 1});
+}
+
+localStorage.setItem("carrinho",JSON.stringify(carrinho));
+renderCarrinho();
+animateToCart(btn);
+}
+
+function animateToCart(button){
+    const card = button.closest('.card');
+    const img = card.querySelector('img');
+    const cartBtn = document.querySelector('.cart-btn');
+    if(!img || !cartBtn) return;
+    const flyImage = img.cloneNode();
+    flyImage.className = 'fly-img';
+    const imgRect = img.getBoundingClientRect();
+    flyImage.style.top = imgRect.top + 'px';
+    flyImage.style.left = imgRect.left + 'px';
+    document.body.appendChild(flyImage);
+    const cartRect = cartBtn.getBoundingClientRect();
+    requestAnimationFrame(() => {
+        flyImage.style.transform = `translate(${cartRect.left - imgRect.left}px, ${cartRect.top - imgRect.top}px) scale(.2)`;
+        flyImage.style.opacity = '0.2';
+    });
+    flyImage.addEventListener('transitionend', () => flyImage.remove());
+}
+
+function renderCarrinho(){
+
+let total=0;
+
+const cartItems = document.getElementById("cartItems");
+if(carrinho.length === 0){
+    cartItems.innerHTML = '<p class="empty">Seu carrinho está vazio. Adicione algo delicioso!</p>';
+} else {
+    cartItems.innerHTML=carrinho.map((item,index)=>{
+        const subtotal = item.preco * item.quantidade;
+        total += subtotal;
+        return `
+        <div class="item">
+            <div class="item-info">
+                <div class="item-name">${item.nome}</div>
+                <div class="item-price">R$ ${item.preco.toFixed(2)} x${item.quantidade} = R$ ${subtotal.toFixed(2)}</div>
+            </div>
+            <div class="item-controls">
+                <button class="qty-btn" onclick="decrementarQuantidade(${index})">−</button>
+                <span class="qty-display">${item.quantidade}</span>
+                <button class="qty-btn" onclick="incrementarQuantidade(${index})">+</button>
+                <button class="remove-btn" onclick="removerItem(${index})">✕</button>
+            </div>
+        </div>
+        `;
+    }).join("");
+}
+
+// Recalcular total
+total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+
+document.getElementById("total").textContent=total.toFixed(2);
+document.getElementById("badge").textContent=carrinho.reduce((sum, item) => sum + item.quantidade, 0);
+}
+
+function remover(i){
+
+carrinho.splice(i,1);
+localStorage.setItem("carrinho",JSON.stringify(carrinho));
+renderCarrinho();
+}
+
+function incrementarQuantidade(index){
+    if(index >= 0 && index < carrinho.length){
+        carrinho[index].quantidade++;
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        renderCarrinho();
+    }
+}
+
+function decrementarQuantidade(index){
+    if(index >= 0 && index < carrinho.length){
+        if(carrinho[index].quantidade > 1){
+            carrinho[index].quantidade--;
+        } else {
+            carrinho.splice(index, 1);
+        }
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        renderCarrinho();
+    }
+}
+
+function removerItem(index){
+    if(index >= 0 && index < carrinho.length){
+        carrinho.splice(index, 1);
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        renderCarrinho();
+    }
+}
+
+function toggleCart(){
+    document.getElementById("sidebar").classList.toggle("open");
+}
+
+function switchTab(tabName){
+    const tabs = document.querySelectorAll('.tab-content');
+    const buttons = document.querySelectorAll('.tab-btn');
+    
+    tabs.forEach(tab => tab.classList.remove('active'));
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    document.getElementById(tabName + '-tab').classList.add('active');
+    event.target.classList.add('active');
+}
+
+function filtrar(cat,btn){
+
+categoriaAtual=cat;
+
+document.querySelectorAll(".categorias button")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+renderProdutos();
+}
+
+function togglePix(){
+    const pixPanel = document.getElementById('pixPanel');
+    pixPanel.hidden = !pixPanel.hidden;
+    const copied = document.getElementById('copiedMessage');
+    if(copied) copied.style.display = 'none';
+}
+
+function copiarPix(){
+    const pixKey = 'pix@salvia.com.br';
+    if(navigator.clipboard){
+        navigator.clipboard.writeText(pixKey).then(() => {
+            document.getElementById('copiedMessage').style.display = 'block';
+            setTimeout(() => document.getElementById('copiedMessage').style.display = 'none', 2000);
+        });
+    } else {
+        prompt('Copie a chave PIX:', pixKey);
+    }
+}
+
+function copiarQr(){
+    const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=pix%3Apix%40salvia.com.br';
+    if(navigator.clipboard){
+        navigator.clipboard.writeText(qrUrl).then(() => {
+            document.getElementById('copiedQrMessage').style.display = 'block';
+            setTimeout(() => document.getElementById('copiedQrMessage').style.display = 'none', 2000);
+        });
+    } else {
+        alert('Abra o QR Code na imagem para copiar');
+    }
+}
+
+function finalizarPedido(){
+    if(carrinho.length === 0){
+        alert('Adicione itens ao carrinho antes de finalizar o pedido.');
+        return;
+    }
+
+    let total = carrinho.reduce((sum, item) => sum + item.preco, 0);
+    const pedido = {
+        id: Date.now(),
+        data: new Date().toLocaleString('pt-BR'),
+        itens: [...carrinho],
+        total: total.toFixed(2)
+    };
+
+    pedidosAnteriores.unshift(pedido);
+    if(pedidosAnteriores.length > 5) pedidosAnteriores.pop();
+    localStorage.setItem('pedidosAnteriores', JSON.stringify(pedidosAnteriores));
+
+    carrinho = [];
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    renderCarrinho();
+    renderOrderHistory();
+    togglePix();
+    alert('Pedido finalizado! Use PIX para pagar e aguarde o envio do comprovante.');
+}
+
+function renderOrderHistory(){
+    const history = document.getElementById('orderHistory');
+    if(pedidosAnteriores.length === 0){
+        history.innerHTML = '<p class="empty">Nenhum pedido anterior ainda.</p>';
+        return;
+    }
+
+    history.innerHTML = pedidosAnteriores.map((pedido, index) => {
+        const itensLabel = pedido.itens.map(item => `${item.quantidade}x ${item.nome}`).join(', ');
+        return `
+        <div class="history-item">
+            <div>
+                <strong>${pedido.data}</strong>
+                <p>${pedido.itens.reduce((sum, item) => sum + item.quantidade, 0)} itens • R$ ${pedido.total}</p>
+                <p style="font-size:12px;">${itensLabel}</p>
+            </div>
+            <button onclick="refazerPedido(${index})">Refazer</button>
+        </div>
+        `;
+    }).join('');
+}
+
+function refazerPedido(index){
+    const pedido = pedidosAnteriores[index];
+    if(!pedido) return;
+    
+    pedido.itens.forEach(item => {
+        const itemExistente = carrinho.find(c => c.nome === item.nome);
+        if(itemExistente){
+            itemExistente.quantidade += item.quantidade;
+        } else {
+            carrinho.push({...item});
+        }
+    });
+    
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    renderCarrinho();
+    toggleCart();
+    alert('Pedido refazido! Confira o carrinho antes de finalizar.');
+}
+
+let currentPaymentSession = null;
+let paymentTimer = null;
+
+function initializePaymentDetection(orderId, total){
+    currentPaymentSession = {
+        id: orderId,
+        total: total,
+        timestamp: Date.now(),
+        confirmed: false
+    };
+
+    const modal = document.getElementById('paymentModal');
+    document.getElementById('orderId').textContent = orderId;
+    document.getElementById('paymentAmount').textContent = 'R$ ' + total;
+    modal.hidden = false;
+
+    let timeRemaining = 60;
+    document.getElementById('timer').textContent = timeRemaining;
+
+    paymentTimer = setInterval(() => {
+        timeRemaining--;
+        document.getElementById('timer').textContent = timeRemaining;
+
+        if(timeRemaining <= 0){
+            clearInterval(paymentTimer);
+            simulatePaymentDetection();
+        }
+    }, 1000);
+}
+
+function simulatePaymentDetection(){
+    if(!currentPaymentSession) return;
+
+    const statusIcon = document.getElementById('statusIcon');
+    const modal = document.getElementById('paymentModal');
+    const paymentInfo = document.querySelector('.payment-info');
+
+    statusIcon.textContent = '✅';
+    statusIcon.classList.remove('status-pending');
+    statusIcon.classList.add('status-confirmed');
+
+    paymentInfo.innerHTML = `
+        <p><strong>Pagamento Confirmado!</strong></p>
+        <p>PIX recebido com sucesso</p>
+    `;
+
+    document.querySelector('#paymentModal .timer').style.display = 'none';
+    document.querySelector('#paymentModal .btn-confirm').style.display = 'none';
+
+    currentPaymentSession.confirmed = true;
+    savePaymentRecord();
+
+    setTimeout(() => {
+        completePayment();
+    }, 2000);
+}
+
+function confirmPaymentManual(){
+    clearInterval(paymentTimer);
+    document.getElementById('timer').textContent = '0';
+    simulatePaymentDetection();
+}
+
+function cancelPayment(){
+    clearInterval(paymentTimer);
+    document.getElementById('paymentModal').hidden = true;
+    currentPaymentSession = null;
+    alert('Pagamento cancelado. O pedido foi descartado.');
+}
+
+function completePayment(){
+    document.getElementById('paymentModal').hidden = true;
+    alert('Pedido confirmado e enviado para a cozinha! Obrigado!');
+    currentPaymentSession = null;
+}
+
+function savePaymentRecord(){
+    if(!currentPaymentSession) return;
+    const pagamentos = JSON.parse(localStorage.getItem('pagamentos')) || [];
+    pagamentos.push(currentPaymentSession);
+    localStorage.setItem('pagamentos', JSON.stringify(pagamentos));
+}
+
+function enviarWhatsApp(){
+    if(carrinho.length === 0){
+        alert('Adicione itens ao carrinho antes de enviar.');
+        return;
+    }
+
+    let mensagem = '🍃 *Pedido Sálvia Restaurante*\n\n';
+    mensagem += '📋 *Itens:*\n';
+    
+    let total = 0;
+    carrinho.forEach(item => {
+        const subtotal = item.preco * item.quantidade;
+        mensagem += `• ${item.quantidade}x ${item.nome} - R$ ${subtotal.toFixed(2)}\n`;
+        total += subtotal;
+    });
+    
+    mensagem += `\n💰 *Total: R$ ${total.toFixed(2)}*\n`;
+    mensagem += `\n Confirme este pedido respondendo esta mensagem. Obrigado! 😊`;
+    
+    const mensagemCodificada = encodeURIComponent(mensagem);
+    const numeroWhatsApp = '551140000000';
+    const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensagemCodificada}`;
+    
+    window.open(urlWhatsApp, '_blank');
+}
+
+function finalizarPedido(){
+    if(carrinho.length === 0){
+        alert('Adicione itens ao carrinho antes de finalizar o pedido.');
+        return;
+    }
+
+    let total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+    const orderId = 'PED-' + Date.now().toString().slice(-8);
+    
+    const pedido = {
+        id: orderId,
+        data: new Date().toLocaleString('pt-BR'),
+        itens: [...carrinho],
+        total: total.toFixed(2),
+        status: 'aguardando_pagamento'
+    };
+
+    pedidosAnteriores.unshift(pedido);
+    if(pedidosAnteriores.length > 5) pedidosAnteriores.pop();
+    localStorage.setItem('pedidosAnteriores', JSON.stringify(pedidosAnteriores));
+
+    carrinho = [];
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    renderCarrinho();
+    renderOrderHistory();
+    togglePix();
+    
+    initializePaymentDetection(orderId, total.toFixed(2));
+}
+
+
+document.getElementById("busca")
+.addEventListener("input",renderProdutos);
+
+normalizarCarrinho();
+renderProdutos();
+renderCarrinho();
+renderOrderHistory();
+
+</script>
+
+</body>
+</html>
