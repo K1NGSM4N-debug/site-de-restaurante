@@ -628,11 +628,11 @@ grid-template-columns:1fr;
 <div id="pedidos-tab" class="tab-content">
 <div class="cart-items" id="orderHistory"></div>
 </div>
-</div>
 
 <div id="favoritos-tab" class="tab-content">
 <div class="cart-items" id="favoriteItems"></div>
 </div>
+
 <div class="total">
 <h2>Total: R$ <span id="total">0.00</span></h2>
 <button class="finalizar" onclick="finalizarPedido()">Finalizar Pedido</button>
@@ -723,9 +723,7 @@ function normalizarCarrinho(){
     }
 }
 
-function renderProdutos();
-    renderFavorites();
-{
+function renderProdutos(){
 
 const busca=document.getElementById("busca").value.toLowerCase();
 
@@ -761,6 +759,7 @@ function toggleFavorite(nome, event){
     }
     localStorage.setItem("favoritos", JSON.stringify(favoritos));
     renderProdutos();
+    renderFavorites();
 }
 
 function addCarrinho(nome, btn){
@@ -884,7 +883,7 @@ function switchTab(tabName, event){
     document.getElementById(tabName + '-tab').classList.add('active');
     if (event && event.target) {
         event.target.classList.add('active');
-    };
+    }
 }
 
 function filtrar(cat,btn){
@@ -996,7 +995,8 @@ function refazerPedido(index){
     toggleCart();
     alert('Pedido refazido! Confira o carrinho antes de finalizar.');
 }
-    function renderFavorites(){
+
+function renderFavorites(){
     const favoritesContainer = document.getElementById('favoriteItems');
     if(favoritos.length === 0){
         favoritesContainer.innerHTML = '<p class="empty">Nenhum favorito ainda. Marque seus produtos favoritos nos cards.</p>';
@@ -1168,7 +1168,7 @@ normalizarCarrinho();
 renderProdutos();
 renderCarrinho();
 renderOrderHistory();
-renderfavorites();    
+renderFavorites();
 
 </script>
 
