@@ -616,8 +616,9 @@ grid-template-columns:1fr;
 </div>
 
 <div class="sidebar-tabs">
-<button class="tab-btn active" onclick="switchTab('carrinho')">🛒 Carrinho</button>
-<button class="tab-btn" onclick="switchTab('pedidos')">📋 Pedidos</button>
+<button class="tab-btn active" onclick="switchTab('carrinho', event)">🛒 Carrinho</button>
+<button class="tab-btn" onclick="switchTab('pedidos', event)">📋 Pedidos</button>
+<button class="tab-btn" onclick="switchTab('favoritos', event)">⭐ Favoritos</button>
 </div>
 
 <div id="carrinho-tab" class="tab-content active">
@@ -627,7 +628,11 @@ grid-template-columns:1fr;
 <div id="pedidos-tab" class="tab-content">
 <div class="cart-items" id="orderHistory"></div>
 </div>
+</div>
 
+<div id="favoritos-tab" class="tab-content">
+<div class="cart-items" id="favoriteItems"></div>
+</div>
 <div class="total">
 <h2>Total: R$ <span id="total">0.00</span></h2>
 <button class="finalizar" onclick="finalizarPedido()">Finalizar Pedido</button>
@@ -718,7 +723,9 @@ function normalizarCarrinho(){
     }
 }
 
-function renderProdutos(){
+function renderProdutos();
+    renderFavorites();
+{
 
 const busca=document.getElementById("busca").value.toLowerCase();
 
@@ -867,7 +874,7 @@ function toggleCart(){
     document.getElementById("sidebar").classList.toggle("open");
 }
 
-function switchTab(tabName){
+function switchTab(tabName, event){
     const tabs = document.querySelectorAll('.tab-content');
     const buttons = document.querySelectorAll('.tab-btn');
     
@@ -875,7 +882,9 @@ function switchTab(tabName){
     buttons.forEach(btn => btn.classList.remove('active'));
     
     document.getElementById(tabName + '-tab').classList.add('active');
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    };
 }
 
 function filtrar(cat,btn){
@@ -986,6 +995,30 @@ function refazerPedido(index){
     renderCarrinho();
     toggleCart();
     alert('Pedido refazido! Confira o carrinho antes de finalizar.');
+}
+    function renderFavorites(){
+    const favoritesContainer = document.getElementById('favoriteItems');
+    if(favoritos.length === 0){
+        favoritesContainer.innerHTML = '<p class="empty">Nenhum favorito ainda. Marque seus produtos favoritos nos cards.</p>';
+        return;
+    }
+
+    favoritesContainer.innerHTML = favoritos.map(nome => {
+        const produto = produtos.find(p => p.nome === nome);
+        if(!produto) return '';
+        return `
+        <div class="item">
+            <div class="item-info">
+                <div class="item-name">${produto.nome}</div>
+                <div class="item-price">R$ ${produto.preco.toFixed(2)}</div>
+            </div>
+            <div class="item-controls">
+                <button class="btn" onclick="addCarrinho('${produto.nome}', this)" style="padding:8px 10px;font-size:13px;">Adicionar</button>
+                <button class="remove-btn" onclick="toggleFavorite('${produto.nome}', event)">Remover</button>
+            </div>
+        </div>
+        `;
+    }).join('');
 }
 
 let currentPaymentSession = null;
@@ -1135,6 +1168,7 @@ normalizarCarrinho();
 renderProdutos();
 renderCarrinho();
 renderOrderHistory();
+renderfavorites();    
 
 </script>
 
